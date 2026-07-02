@@ -429,7 +429,7 @@ if __name__ == '__main__':
 # def index():
     # return "Hello Flask"
 
-本地直接运行入口
+# 本地直接运行入口
 # if __name__ == '__main__':
     # app.run(debug=True)
 # 执行命令：
@@ -618,3 +618,117 @@ if __name__ == '__main__':
 # • 名字以 . 开头的文件默认会被隐藏，执行 ls 命令时会看不到
 # 它们，这时你可以使用 ls -f 命令来列出所有文件。
 # • 了解 HTTP 基本知识将会有助于你了解 Flask 的工作原理。
+
+
+
+# url_for 带额外参数（查询参数）真实业务场景举例
+# url_for(视图函数名, 路由变量=值, 额外键值对) 中，不在路由 <变量> 里的参数，会自动拼接成 ?key=value 查询字符串，也就是你代码里 num=2 的效果 /test?num=2。
+# 下面给 5 个企业真实开发高频场景，全部是项目里常用写法。
+# 场景 1：分页跳转（最常用）
+# 后台列表分页，页面切换时传递页码、每页条数
+# python
+# 运行
+# from flask import Flask, url_for, render_template_string
+
+# app = Flask(__name__)
+
+# @app.route('/article/list')
+# def article_list():
+    # page = 1
+    # page_size = 10
+    # # 生成分页跳转链接：/article/list?page=2&page_size=10
+    # next_page_url = url_for("article_list", page=page+1, page_size=page_size)
+    # # 传给模板渲染分页按钮
+    # html = f"""
+    # <a href="{next_page_url}">下一页</a>
+    # """
+    # return html
+
+# if __name__ == '__main__':
+    # app.run(debug=True)
+# 访问 /article/list，打印 next_page_url 结果：
+# /article/list?page=2&page_size=10
+# 场景 2：搜索筛选，携带查询条件
+# 商品 / 用户搜索，保留关键词、筛选条件跳转页面
+# python
+# 运行
+# @app.route('/goods')
+# def goods():
+    # keyword = "手机"
+    # price_min = 1000
+    # # 拼接筛选链接 /goods?keyword=手机&price_min=1000&sort=sale
+    # sort_sale = url_for("goods", keyword=keyword, price_min=price_min, sort="sale")
+    # sort_price = url_for("goods", keyword=keyword, price_min=price_min, sort="price")
+    # return f'''
+    # 销量排序：<a href="{sort_sale}">销量优先</a>
+    # 价格排序：<a href="{sort_price}">价格优先</a>
+    # '''
+# 场景 3：列表跳转详情，附带来源页标识
+# 从列表点进详情，记录「来源页面 + 页码」，方便详情页返回时回到原列表
+# python
+# 运行
+# @app.route('/user/<uid>')
+# def user_detail(uid):
+    # # 获取跳转时带的来源参数
+    # from flask import request
+    # source_page = request.args.get("source_page", "user_list")
+    # page = request.args.get("page", 1)
+    # # 返回按钮链接，带回原来的页码
+    # back_url = url_for(source_page, page=page)
+    # return f'用户{uid}详情 <a href="{back_url}">返回列表</a>'
+
+# @app.route('/user/list')
+# def user_list():
+    # page = 3
+    # # 跳转用户详情，额外携带来源标识
+    # detail_url = url_for("user_detail", uid=1001, source_page="user_list", page=page)
+    # return f'<a href="{detail_url}">查看1001号用户</a>'
+# 点击链接生成地址：/user/1001?source_page=user_list&page=3
+# 场景 4：文件下载，携带下载标记与回调参数
+# 后端下载接口，附带来源、文件类型参数做日志统计
+# python
+# 运行
+# @app.route('/download/file')
+# def download_file():
+    # file_id = 88
+    # # 下载链接附带统计参数：/download/file?file_id=88&from=report&token=xxx
+    # download_link = url_for("download_file", file_id=file_id, from="report", token="abc123")
+    # return f'<a href="{download_link}">下载报表</a>'
+# 场景 5：登录 / 权限跳转，携带跳转后回跳地址
+# 登录页常用：未登录访问需要权限的页面，跳登录，登录成功后返回原来页面
+# python
+# 运行
+# @app.route('/login')
+# def login():
+    # # 获取跳转过来时携带的 next 目标地址
+    # next_url = request.args.get("next", url_for("index"))
+    # return f'''
+    # <p>登录页面</p>
+    # <a href="{next_url}">登录成功后返回</a>
+    # '''
+
+# @app.route('/admin')
+# def admin():
+    # # 需要登录，拼接 next 参数传递当前页面
+    # login_redirect = url_for("login", next="/admin")
+    # return f'无权限，请<a href="{login_redirect}">登录</a>'
+
+# @app.route('/')
+# def index():
+    # return '首页'
+# 访问 /admin 生成登录地址：/login?next=/admin
+# 补充：和路由变量区分清楚
+# python
+# 运行
+# # 路由带固定变量 <name>，必须放在url_for传参
+# @app.route('/user/<name>')
+# def user(name): pass
+
+# # name 是路由占位变量，会拼进路径；sort、page是额外参数，拼 ? 查询串
+# url_for("user", name="tom", sort="time", page=2)
+# # 输出：/user/tom?sort=time&page=2
+# 核心总结
+# url_for(视图名, 路由变量=值, 任意自定义参数)
+# 匹配路由 <xxx> 的参数：拼接进 URL 路径
+# 其余参数：自动拼接为 ?k=v&k2=v2 查询字符串
+# 业务中分页、搜索筛选、登录回跳、来源记录、下载统计全靠这个特性实现。
