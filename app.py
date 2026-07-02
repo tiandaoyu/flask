@@ -145,32 +145,32 @@ app = Flask(__name__)
 # def user_page(name):
     # # return 'User page'+" "+name
       # return 'User: %s' % name
-@app.route('/')
-def hello():
-    return 'Hello'
-@app.route('/user/<name>')
-def user_page(name):
-    return 'User: %s' % name
-@app.route('/test')
-def test_url_for():
-    # 下面是一些调用示例（请在命令行窗口查看输出的 URL）：
-    print(url_for('hello')) # 输出：/
-    # 注意下面两个调用是如何生成包含 URL 变量的 URL 的
-    print(url_for('user_page', name='greyli')) 
-    # 输出：/user/greyli
-    print(url_for('user_page', name='peter')) 
-    # 输出：/ user/peter
-    print(url_for('test_url_for')) 
-    # 输出：/test
-    # # 下面这个调用传入了多余的关键字参数，它们会被作为查询字
-    # 符串附加到 URL 后面。
-    print(url_for('test_url_for', num=2)) 
-    # 输出：/test?num=2
-    return 'Test page'
+# @app.route('/')
+# def hello():
+    # return 'Hello'
+# @app.route('/user/<name>')
+# def user_page(name):
+    # return 'User: %s' % name
+# @app.route('/test')
+# def test_url_for():
+    # # 下面是一些调用示例（请在命令行窗口查看输出的 URL）：
+    # print(url_for('hello')) # 输出：/
+    # # 注意下面两个调用是如何生成包含 URL 变量的 URL 的
+    # print(url_for('user_page', name='greyli')) 
+    # # 输出：/user/greyli
+    # print(url_for('user_page', name='peter')) 
+    # # 输出：/ user/peter
+    # print(url_for('test_url_for')) 
+    # # 输出：/test
+    # # # 下面这个调用传入了多余的关键字参数，它们会被作为查询字
+    # # 符串附加到 URL 后面。
+    # print(url_for('test_url_for', num=2)) 
+    # # 输出：/test?num=2
+    # return 'Test page'
 
-if __name__ == '__main__':
-    # host="0.0.0.0" 开放局域网访问，port=8080自定义端口
-    app.run(host="0.0.0.0", port=8080, debug=True)
+# if __name__ == '__main__':
+    # # host="0.0.0.0" 开放局域网访问，port=8080自定义端口
+    # app.run(host="0.0.0.0", port=8080, debug=True)
 
 
 
@@ -429,11 +429,7 @@ if __name__ == '__main__':
 # def index():
     # return "Hello Flask"
 
-<<<<<<< HEAD
 # 本地直接运行入口
-=======
-本地直接运行入口
->>>>>>> 435da1c72e0a7046c84f65510001c32bedf70e05
 # if __name__ == '__main__':
     # app.run(debug=True)
 # 执行命令：
@@ -621,7 +617,6 @@ if __name__ == '__main__':
 # 函数内。我们先暂时不用纠结，后面再慢慢了解。
 # • 名字以 . 开头的文件默认会被隐藏，执行 ls 命令时会看不到
 # 它们，这时你可以使用 ls -f 命令来列出所有文件。
-<<<<<<< HEAD
 # • 了解 HTTP 基本知识将会有助于你了解 Flask 的工作原理。
 
 
@@ -737,6 +732,15 @@ if __name__ == '__main__':
 # 匹配路由 <xxx> 的参数：拼接进 URL 路径
 # 其余参数：自动拼接为 ?k=v&k2=v2 查询字符串
 # 业务中分页、搜索筛选、登录回跳、来源记录、下载统计全靠这个特性实现。
-=======
-# • 了解 HTTP 基本知识将会有助于你了解 Flask 的工作原理。
->>>>>>> 435da1c72e0a7046c84f65510001c32bedf70e05
+
+
+
+# 第 3 章：模板
+# 在一般的 Web 程序里，访问一个地址通常会返回一个包含各类信
+# 息的 HTML 页面。因为我们的程序是动态的，页面中的某些信息需
+# 要根据不同的情况来进行调整，比如对登录和未登录用户显示不同
+# 的信息，所以页面需要在用户访问时根据程序逻辑动态生成。
+# 我们把包含变量和运算逻辑的 HTML 或其他格式的文本叫做模板，
+# 执行这些变量替换和逻辑计算工作的过程被称为渲染，这个工作由
+# 我们这一章要学习使用的模板渲染引擎——Jinja2 来完成。
+
